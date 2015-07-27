@@ -7,10 +7,11 @@
 
 #define USE_BARRIER 0
 #include "barrier.h"
+#include "qsim_magic.h"
 
 volatile int victim, r1, r2, wait;
 volatile unsigned long counter;
-unsigned long iter = 1000000;
+unsigned long iter = 100000;
 
 void *thread1(void *arg)
 {
@@ -50,7 +51,8 @@ int main()
 {
 	pthread_t tid1, tid2;
 
-	for (int i = 0; i < 3; i++) {
+	qsim_magic_enable();
+	for (int i = 0; i < 1; i++) {
 		counter = 0;
 		pthread_create(&tid1, NULL, thread1, NULL);
 		pthread_create(&tid2, NULL, thread2, NULL);
@@ -59,8 +61,9 @@ int main()
 		pthread_join(tid1, NULL);
 		pthread_join(tid2, NULL);
 		barrier();
-        printf("counter is %lu\n", counter);
+		printf("counter is %lu\n", counter);
 	}
+	qsim_magic_disable();
 
 	return 0;
 }
