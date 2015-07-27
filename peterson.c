@@ -11,7 +11,9 @@
 
 volatile int victim, r1, r2, wait;
 volatile unsigned long counter;
-unsigned long iter = 100000;
+unsigned long iter = 1000;
+
+#define QSIM_ENABLE 1
 
 void *thread1(void *arg)
 {
@@ -51,7 +53,9 @@ int main()
 {
 	pthread_t tid1, tid2;
 
+#if QSIM_ENABLE
 	qsim_magic_enable();
+#endif
 	for (int i = 0; i < 1; i++) {
 		counter = 0;
 		pthread_create(&tid1, NULL, thread1, NULL);
@@ -63,7 +67,9 @@ int main()
 		barrier();
 		printf("counter is %lu\n", counter);
 	}
+#if QSIM_ENABLE
 	qsim_magic_disable();
+#endif
 
 	return 0;
 }
